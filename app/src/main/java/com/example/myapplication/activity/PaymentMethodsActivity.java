@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import com.example.myapplication.R;
 import com.example.myapplication.adapter.PaymentMethodAdapter;
 import com.example.myapplication.api.APIService;
 import com.example.myapplication.model.PaymentMethod;
+import com.example.myapplication.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,8 @@ public class PaymentMethodsActivity extends AppCompatActivity implements Payment
     private PaymentMethodAdapter adapter;
     private List<PaymentMethod> paymentMethods;
     private String username;
+
+    private String selectedPaymentMethod;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,17 +63,30 @@ public class PaymentMethodsActivity extends AppCompatActivity implements Payment
         adapter = new PaymentMethodAdapter(paymentMethods, this);
         recyclerView.setAdapter(adapter);
         getUsernameFromSharedPreferences();
+
+        Button orderBtn = findViewById(R.id.orderBtn);
+        orderBtn.setOnClickListener(v -> {
+            if (selectedPaymentMethod != null) {
+                setPaymentMethodInCart(selectedPaymentMethod);
+                setProductInCartIsConfirmed();
+                finish();
+                Intent intent = new Intent(PaymentMethodsActivity.this, OrderSuccessActivity.class);
+                startActivity(intent);
+            } else {
+                ToastUtils.showCustomToast(this, "Vui lòng chọn phương thức thanh toán");
+            }
+        });
         ImageView backButton = findViewById(R.id.backButton);
-        backButton.setOnClickListener(v -> onBackPressed());
+        backButton.setOnClickListener(v -> {
+            finish();
+            Intent intent = new Intent(PaymentMethodsActivity.this, DiscountActivity.class);
+            startActivity(intent);
+        });
     }
 
     @Override
     public void onItemClick(String title) {
-        setPaymentMethodInCart(title);
-        setProductInCartIsConfirmed();
-        finish();
-        Intent intent = new Intent(PaymentMethodsActivity.this, OrderSuccessActivity.class);
-        startActivity(intent);
+        selectedPaymentMethod = title;
     }
     private void getUsernameFromSharedPreferences() {
         SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);

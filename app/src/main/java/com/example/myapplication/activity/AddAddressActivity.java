@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.example.myapplication.R;
 import com.example.myapplication.api.APIService;
 import com.example.myapplication.model.Address;
+import com.example.myapplication.utils.ToastUtils;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -62,21 +63,26 @@ public class AddAddressActivity extends AppCompatActivity {
         String name = nameEdt.getText().toString();
         String phoneNum  = phoneNumEdt.getText().toString();
         String address = addressEdt.getText().toString();
-        Address newAddress = new Address(username, name, phoneNum, address, false);
-        APIService.apiService.saveDataAddress(newAddress).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Log.e("AddAddressActivity", "Success");
-                } else {
-                    Log.e("AddAddressActivity", "Failed");
+        if (name.isEmpty()||phoneNum.isEmpty()||address.isEmpty()) {
+            ToastUtils.showCustomToast(this, "Vui lòng nhập đầy đủ thông tin địa chỉ");
+        }
+        else {
+            Address newAddress = new Address(username, name, phoneNum, address, false);
+            APIService.apiService.saveDataAddress(newAddress).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        Log.e("AddAddressActivity", "Success");
+                    } else {
+                        Log.e("AddAddressActivity", "Failed");
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
-                Log.e("API Error", "Call API error: " + t.getMessage(), t);
-            }
-        });
+                @Override
+                public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                    Log.e("API Error", "Call API error: " + t.getMessage(), t);
+                }
+            });
+        }
     }
 }

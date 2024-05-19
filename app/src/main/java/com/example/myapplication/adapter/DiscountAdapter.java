@@ -62,33 +62,40 @@ public class DiscountAdapter extends RecyclerView.Adapter<DiscountAdapter.Discou
         if (total < discount.getConditionTotal()) {
             double totalNeeded = discount.getConditionTotal() - total;
             holder.subDiscountConditionTxt.setText(String.format("Hãy mua thêm %,d.000đ để nhận được khuyến mãi này", (int) totalNeeded));
-            holder.itemView.setAlpha(0.5f);
+            holder.subDiscountConditionTxt.setVisibility(View.VISIBLE);
             holder.radioButton.setVisibility(View.GONE);
+            holder.itemView.setAlpha(0.5f);
+            holder.itemView.setEnabled(false);
         } else {
             holder.subDiscountConditionTxt.setVisibility(View.GONE);
             holder.radioButton.setVisibility(View.VISIBLE);
             holder.itemView.setAlpha(1f);
-            holder.radioButton.setEnabled(true);
+            holder.itemView.setEnabled(true);
         }
 
         holder.radioButton.setChecked(position == selectedPosition);
 
         holder.itemView.setOnClickListener(v -> {
-            int previousPosition = selectedPosition;
-            selectedPosition = holder.getAdapterPosition();
-            listener.onItemClick(discount.getValueDiscount());
-            notifyItemChanged(previousPosition);
-            notifyItemChanged(selectedPosition);
+            if (total >= discount.getConditionTotal()) {
+                int previousPosition = selectedPosition;
+                selectedPosition = holder.getAdapterPosition();
+                listener.onItemClick(discount.getValueDiscount());
+                notifyItemChanged(previousPosition);
+                notifyItemChanged(selectedPosition);
+            }
         });
 
         holder.radioButton.setOnClickListener(v -> {
-            int previousPosition = selectedPosition;
-            selectedPosition = holder.getAdapterPosition();
-            listener.onItemClick(discount.getValueDiscount());
-            notifyItemChanged(previousPosition);
-            notifyItemChanged(selectedPosition);
+            if (total >= discount.getConditionTotal()) {
+                int previousPosition = selectedPosition;
+                selectedPosition = holder.getAdapterPosition();
+                listener.onItemClick(discount.getValueDiscount());
+                notifyItemChanged(previousPosition);
+                notifyItemChanged(selectedPosition);
+            }
         });
     }
+
 
     @Override
     public int getItemCount() {

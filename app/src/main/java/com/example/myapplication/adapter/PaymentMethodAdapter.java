@@ -48,22 +48,37 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
         holder.textViewDescription.setText(paymentMethod.getDescription());
         holder.radioButton.setChecked(position == selectedPosition);
 
+        if (position >= 1 && position <= 3) {
+            holder.itemView.setAlpha(0.5f);
+            holder.itemView.setEnabled(false);
+            holder.radioButton.setEnabled(false);
+        } else {
+            holder.itemView.setAlpha(1f);
+            holder.itemView.setEnabled(true);
+            holder.radioButton.setEnabled(true);
+        }
+
         holder.itemView.setOnClickListener(v -> {
-            int previousPosition = selectedPosition;
-            selectedPosition = holder.getAdapterPosition();
-            listener.onItemClick(paymentMethod.getTitle());
-            notifyItemChanged(previousPosition);
-            notifyItemChanged(selectedPosition);
+            if (position < 1 || position > 3) {
+                int previousPosition = selectedPosition;
+                selectedPosition = holder.getAdapterPosition();
+                listener.onItemClick(paymentMethod.getTitle());
+                notifyItemChanged(previousPosition);
+                notifyItemChanged(selectedPosition);
+            }
         });
 
         holder.radioButton.setOnClickListener(v -> {
-            int previousPosition = selectedPosition;
-            selectedPosition = holder.getAdapterPosition();
-            listener.onItemClick(paymentMethod.getTitle());
-            notifyItemChanged(previousPosition);
-            notifyItemChanged(selectedPosition);
+            if (position < 1 || position > 3) {
+                int previousPosition = selectedPosition;
+                selectedPosition = holder.getAdapterPosition();
+                listener.onItemClick(paymentMethod.getTitle());
+                notifyItemChanged(previousPosition);
+                notifyItemChanged(selectedPosition);
+            }
         });
     }
+
 
     @Override
     public int getItemCount() {
