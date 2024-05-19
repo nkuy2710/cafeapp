@@ -1,7 +1,6 @@
 package com.example.myapplication.fragment;
 
 import static android.app.Activity.RESULT_OK;
-
 import static com.example.myapplication.utils.ToastUtils.showCustomToast;
 
 import android.content.Context;
@@ -31,6 +30,7 @@ import android.widget.TextView;
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
+import com.example.myapplication.activity.DetailActivity;
 import com.example.myapplication.activity.LoginActivity;
 import com.example.myapplication.api.APIService;
 import com.example.myapplication.activity.CartActivity;
@@ -51,8 +51,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeFragment extends Fragment implements CategoryAdapter.OnCategoryClickListener, ProductAdapter.OnAddToCartClickListener{
-    //
+public class HomeFragment extends Fragment implements CategoryAdapter.OnCategoryClickListener, ProductAdapter.OnAddToCartClickListener, ProductAdapter.OnItemClickListener {
     private static final int SPEECH_REQUEST_CODE = 0;
     private EditText searchTxt;
     private TextView viewAllCafeTxt, viewAllCakeTxt;
@@ -62,9 +61,9 @@ public class HomeFragment extends Fragment implements CategoryAdapter.OnCategory
     private List<Product> productCafeList, productCakeList;
     private ActivityResultLauncher<Intent> launcher;
     TextView viewAllTxt;
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home_client, container, false);
         ImageSlider imageSlider = rootView.findViewById(R.id.imageSlider);
         ArrayList<SlideModel> slideModels = new ArrayList<>();
@@ -96,8 +95,6 @@ public class HomeFragment extends Fragment implements CategoryAdapter.OnCategory
         productCafeList = new ArrayList<>();
         productCakeList = new ArrayList<>();
 
-
-
         nameTxt.setText(getUsernameFromSharedPreferences());
 
         callApiGetListBestCafe();
@@ -122,7 +119,6 @@ public class HomeFragment extends Fragment implements CategoryAdapter.OnCategory
         cartBtn.setOnClickListener(v -> cartBtnOnClick());
         searchBtn.setOnClickListener(v -> searchBtnOnClick());
         micBtn.setOnClickListener(v -> startSpeechToText());
-
 
         return rootView;
     }
@@ -155,6 +151,7 @@ public class HomeFragment extends Fragment implements CategoryAdapter.OnCategory
         intent.putExtra("PRICE_VALUE", priceValue);
         startActivity(intent);
     }
+
     private void filterProductsByStar(String selectedStarOption) {
         String starValue;
         switch (selectedStarOption) {
@@ -202,87 +199,87 @@ public class HomeFragment extends Fragment implements CategoryAdapter.OnCategory
         intent.putExtra("CATEGORY_TITLE", category.getTitle().toLowerCase());
         startActivity(intent);
     }
+
     private void startSpeechToText() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak now...");
         launcher.launch(intent);
     }
+
     private void clearSavedUsername() {
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("username");
         editor.apply();
     }
+
     private void clearSavedUserRole() {
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("userRole");
         editor.apply();
     }
+
     private String getUsernameFromSharedPreferences() {
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         return sharedPreferences.getString("username", "");
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == SPEECH_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-            ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            if (result != null && !result.isEmpty()) {
-                String searchText = result.get(0);
-                searchTxt.setText(searchText);
-            }
-        }
-    }
-
     private void callApiGetListBestCafe() {
-        APIService.apiService.getListBestCafe()
-                .enqueue(new Callback<List<Product>>() {
-                    @Override
-                    public void onResponse(@NonNull Call<List<Product>> call, @NonNull Response<List<Product>> response) {
-                        prBestCafe.setVisibility(View.GONE);
-                        productCafeList = response.body();
-                        showListBestCafe(productCafeList);
-                    }
+        APIService.apiService.getListBestCafe().enqueue(new Callback<List<Product>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Product>> call, @NonNull Response<List<Product>> response) {
+                prBestCafe.setVisibility(View.GONE);
+                productCafeList = response.body();
+                showListBestCafe(productCafeList);
+            }
 
-                    @Override
-                    public void onFailure(@NonNull Call<List<Product>> call, @NonNull Throwable t) {
-                        Log.e("API Error", "Call API error: " + t.getMessage(), t);
-                    }
-                });
+            @Override
+            public void onFailure(@NonNull Call<List<Product>> call, @NonNull Throwable t) {
+                Log.e("API Error", "Call API error: " + t.getMessage(), t);
+            }
+        });
     }
+
     private void callApiGetListBestCake() {
-        APIService.apiService.getListBestCake()
-                .enqueue(new Callback<List<Product>>() {
-                    @Override
-                    public void onResponse(@NonNull Call<List<Product>> call, @NonNull Response<List<Product>> response) {
-                        prBestCake.setVisibility(View.GONE);
-                        productCakeList = response.body();
-                        showListBestCake(productCakeList);
-                    }
+        APIService.apiService.getListBestCake().enqueue(new Callback<List<Product>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Product>> call, @NonNull Response<List<Product>> response) {
+                prBestCake.setVisibility(View.GONE);
+                productCakeList = response.body();
+                showListBestCake(productCakeList);
+            }
 
-                    @Override
-                    public void onFailure(@NonNull Call<List<Product>> call, @NonNull Throwable t) {
-                        Log.e("API Error", "Call API error: " + t.getMessage(), t);
-                    }
-                });
+            @Override
+            public void onFailure(@NonNull Call<List<Product>> call, @NonNull Throwable t) {
+                Log.e("API Error", "Call API error: " + t.getMessage(), t);
+            }
+        });
     }
+
     private void showListBestCafe(List<Product> products) {
         if (products != null) {
             ProductAdapter productAdapter = new ProductAdapter(products);
+            productAdapter.setOnItemClickListener(this::openDetailActivity);
             productAdapter.setOnAddToCartClickListener(this);
             rcCafe.setAdapter(productAdapter);
         }
     }
+
     private void showListBestCake(List<Product> products) {
         if (products != null) {
             ProductAdapter productAdapter = new ProductAdapter(products);
+            productAdapter.setOnItemClickListener(this::openDetailActivity);
             productAdapter.setOnAddToCartClickListener(this);
             rcCake.setAdapter(productAdapter);
         }
+    }
+
+    private void openDetailActivity(Product product) {
+        Intent intent = new Intent(requireContext(), DetailActivity.class);
+        intent.putExtra("PRODUCT", product);
+        startActivity(intent);
     }
 
     @Override
@@ -290,29 +287,33 @@ public class HomeFragment extends Fragment implements CategoryAdapter.OnCategory
         String username = getUsernameFromSharedPreferences();
         Cart cart = new Cart(username, product, 1);
         ArrayList<String> selectedOptions = new ArrayList<>();
-        APIService.apiService.addToCart(cart, selectedOptions)
-                .enqueue(new Callback<Cart>() {
-                    @Override
-                    public void onResponse(@NonNull Call<Cart> call, @NonNull Response<Cart> response) {
-                        if (response.isSuccessful()) {
-                            showCustomToast(requireContext(), "Thêm sản phẩm thành công");                      }
-                        else {
-                            showCustomToast(requireContext(), "Thêm sản phẩm thất bại");
-                            try {
-                                assert response.errorBody() != null;
-                                Log.e("SignupActivity", "Lỗi khi thêm sản phẩm: " + response.errorBody().string());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
+        APIService.apiService.addToCart(cart, selectedOptions).enqueue(new Callback<Cart>() {
+            @Override
+            public void onResponse(@NonNull Call<Cart> call, @NonNull Response<Cart> response) {
+                if (response.isSuccessful()) {
+                    showCustomToast(requireContext(), "Thêm sản phẩm thành công");
+                } else {
+                    showCustomToast(requireContext(), "Thêm sản phẩm thất bại");
+                    try {
+                        assert response.errorBody() != null;
+                        Log.e("SignupActivity", "Lỗi khi thêm sản phẩm: " + response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
+                }
+            }
 
-                    @Override
-                    public void onFailure(@NonNull Call<Cart> call, @NonNull Throwable t) {
-                        Log.e("HomeActivity", "Lỗi khi gửi yêu cầu thêm sản phẩm: " + t.getMessage(), t);
-                    }
-
-                });
+            @Override
+            public void onFailure(@NonNull Call<Cart> call, @NonNull Throwable t) {
+                Log.e("HomeActivity", "Lỗi khi gửi yêu cầu thêm sản phẩm: " + t.getMessage(), t);
+            }
+        });
     }
 
+    @Override
+    public void onItemClick(Product product) {
+        Intent intent = new Intent(requireContext(), DetailActivity.class);
+        intent.putExtra("PRODUCT", product);
+        startActivity(intent);
+    }
 }

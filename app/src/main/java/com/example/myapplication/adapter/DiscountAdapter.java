@@ -59,24 +59,24 @@ public class DiscountAdapter extends RecyclerView.Adapter<DiscountAdapter.Discou
         holder.discountTxt.setText(String.format("Giảm giá %d%%", discount.getValueDiscount()));
         holder.discountConditionTxt.setText(discount.getConditionDiscount());
 
-        if (total < discount.getConditionTotal()) {
+        boolean isConditionMet = total >= discount.getConditionTotal();
+
+        if (!isConditionMet) {
             double totalNeeded = discount.getConditionTotal() - total;
             holder.subDiscountConditionTxt.setText(String.format("Hãy mua thêm %,d.000đ để nhận được khuyến mãi này", (int) totalNeeded));
-            holder.subDiscountConditionTxt.setVisibility(View.VISIBLE);
-            holder.radioButton.setVisibility(View.GONE);
             holder.itemView.setAlpha(0.5f);
-            holder.itemView.setEnabled(false);
+            holder.radioButton.setVisibility(View.GONE);
         } else {
             holder.subDiscountConditionTxt.setVisibility(View.GONE);
             holder.radioButton.setVisibility(View.VISIBLE);
             holder.itemView.setAlpha(1f);
-            holder.itemView.setEnabled(true);
+            holder.radioButton.setEnabled(true);
         }
 
         holder.radioButton.setChecked(position == selectedPosition);
 
         holder.itemView.setOnClickListener(v -> {
-            if (total >= discount.getConditionTotal()) {
+            if (isConditionMet) {
                 int previousPosition = selectedPosition;
                 selectedPosition = holder.getAdapterPosition();
                 listener.onItemClick(discount.getValueDiscount());
@@ -86,7 +86,7 @@ public class DiscountAdapter extends RecyclerView.Adapter<DiscountAdapter.Discou
         });
 
         holder.radioButton.setOnClickListener(v -> {
-            if (total >= discount.getConditionTotal()) {
+            if (isConditionMet) {
                 int previousPosition = selectedPosition;
                 selectedPosition = holder.getAdapterPosition();
                 listener.onItemClick(discount.getValueDiscount());

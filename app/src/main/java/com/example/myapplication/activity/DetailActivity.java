@@ -76,7 +76,7 @@ public class DetailActivity extends AppCompatActivity {
                 linearLayout.setVisibility(View.GONE);
             }
         }
-        back1Btn.setOnClickListener(v -> back1BtnOnClick());
+        back1Btn.setOnClickListener(v -> finish());
         minusBtn.setOnClickListener(v -> {
             if (quantity > 1) {
                 quantity--;
@@ -153,11 +153,5 @@ public class DetailActivity extends AppCompatActivity {
                         Log.e("DetailActivity", "Lỗi khi gửi yêu cầu thêm sản phẩm: " + t.getMessage(), t);
                     }
                 });
-    }
-
-
-    private void back1BtnOnClick() {
-        Intent intent = new Intent(DetailActivity.this, ListProductActivity.class);
-        startActivity(intent);
     }
 }

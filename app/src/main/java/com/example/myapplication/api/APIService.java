@@ -138,6 +138,8 @@ public interface APIService {
     Call<User> signUpUser(@Body User user);
     @POST("/reply/save-content-reply")
     Call<Void> saveDataReply(@Body Reply reply);
+    @GET("/reply/get-content-reply")
+    Call<List<Reply>> getContentReply();
     @POST("/users/save-infor-user")
     Call<Void> saveInforUser(@Query("username") String username, @Query("fullname") String fullname, @Query("email") String email, @Query("phoneNumber") String phoneNumber);
     @Multipart

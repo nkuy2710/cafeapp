@@ -29,6 +29,7 @@ import com.example.myapplication.activity.ListProduct1Activity;
 import com.example.myapplication.activity.LoginActivity;
 import com.example.myapplication.activity.ReplyActivity;
 import com.example.myapplication.R;
+import com.example.myapplication.activity.ReplyForAdminActivity;
 import com.example.myapplication.activity.StaffInforActivity;
 
 public class AccountFragment extends Fragment {
@@ -63,20 +64,14 @@ public class AccountFragment extends Fragment {
 
         btnDialogLogout = dialog.findViewById(R.id.btnDialogLogout);
         btnDialogCancel = dialog.findViewById(R.id.btnDialogCancel);
-        btnDialogCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        btnDialogLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clearSavedUsername();
-                clearSavedUserRole();
-                Intent intent = new Intent(requireContext(), LoginActivity.class);
-                startActivity(intent);
-            }
+        String userRole = getUsernameRoleSharedPreferences();
+
+        btnDialogCancel.setOnClickListener(v -> dialog.dismiss());
+        btnDialogLogout.setOnClickListener(v -> {
+            clearSavedUsername();
+            clearSavedUserRole();
+            Intent intent = new Intent(requireContext(), LoginActivity.class);
+            startActivity(intent);
         });
         String username = getUsernameFromSharedPreferences();
         usernameTxt.setText(username);
@@ -105,7 +100,12 @@ public class AccountFragment extends Fragment {
         });
 
         replyTxT.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), ReplyActivity.class);
+            Intent intent;
+            if(!"client".equals(userRole))
+                intent = new Intent(requireContext(), ReplyForAdminActivity.class);
+            else {
+                intent = new Intent(requireContext(), ReplyActivity.class);
+            }
             startActivity(intent);
         });
 
@@ -122,8 +122,6 @@ public class AccountFragment extends Fragment {
         logoutTxT.setOnClickListener(v -> {
                 dialog.show();
         });
-
-        String userRole = getUsernameRoleSharedPreferences();
 
         if ("client".equals(userRole)) {
             linearLayout1.setVisibility(View.GONE);

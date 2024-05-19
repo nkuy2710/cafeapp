@@ -16,16 +16,26 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
-    //
     private final List<Product> productList;
     private OnAddToCartClickListener addToCartClickListener;
+    private OnItemClickListener listener;
+
+    public interface OnItemClickListener {
+        void onItemClick(Product product);
+    }
 
     public ProductAdapter(List<Product> productList) {
         this.productList = productList;
     }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
     public void setOnAddToCartClickListener(OnAddToCartClickListener listener) {
         this.addToCartClickListener = listener;
     }
+
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -43,6 +53,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.title.setText(product.getTitle());
         holder.price.setText(product.getPrice() + "00đ");
         holder.star.setText(product.getStar().toString());
+        holder.bind(product, listener); // Pass the listener directly
         holder.addToCartBtn.setOnClickListener(v -> {
             if (addToCartClickListener != null) {
                 addToCartClickListener.onAddToCartClick(product);
@@ -52,10 +63,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     @Override
     public int getItemCount() {
-        if (productList != null) {
-            return productList.size();
-        }
-        return 0;
+        return productList != null ? productList.size() : 0;
     }
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
@@ -64,6 +72,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         private final TextView price;
         private final TextView star;
         private final TextView addToCartBtn;
+
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
             pic = itemView.findViewById(R.id.pic);
@@ -72,7 +81,21 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             star = itemView.findViewById(R.id.starTxt);
             addToCartBtn = itemView.findViewById(R.id.addToCartBtn);
         }
+
+        public void bind(final Product product, final OnItemClickListener listener) {
+            Picasso.get().load(product.getImage()).into(pic);
+            title.setText(product.getTitle());
+            price.setText(product.getPrice() + "00đ");
+            star.setText(product.getStar().toString());
+
+            itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onItemClick(product);
+                }
+            });
+        }
     }
+
     public interface OnAddToCartClickListener {
         void onAddToCartClick(Product product);
     }
