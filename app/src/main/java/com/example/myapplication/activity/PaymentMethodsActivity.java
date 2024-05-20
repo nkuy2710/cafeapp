@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -64,8 +65,8 @@ public class PaymentMethodsActivity extends AppCompatActivity implements Payment
         recyclerView.setAdapter(adapter);
         getUsernameFromSharedPreferences();
 
-        Button orderBtn = findViewById(R.id.orderBtn);
-        orderBtn.setOnClickListener(v -> {
+        Button confirmBtn = findViewById(R.id.cfmBtn);
+        confirmBtn.setOnClickListener(v -> {
             if (selectedPaymentMethod != null) {
                 setPaymentMethodInCart(selectedPaymentMethod);
                 setProductInCartIsConfirmed();

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.example.myapplication.R;
@@ -31,7 +32,6 @@ public class DiscountActivity extends AppCompatActivity implements DiscountAdapt
     private RecyclerView rcDiscount;
     private List<Discount> discountList;
     private String username;
-    private ImageView backBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class DiscountActivity extends AppCompatActivity implements DiscountAdapt
         }
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_discount);
-        backBtn = findViewById(R.id.backBtn);
+        ImageView backBtn = findViewById(R.id.backBtn);
         rcDiscount = findViewById(R.id.rcDiscount);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rcDiscount.setLayoutManager(linearLayoutManager);
@@ -57,13 +57,16 @@ public class DiscountActivity extends AppCompatActivity implements DiscountAdapt
             Intent intent = new Intent(DiscountActivity.this, AddressActivity.class);
             startActivity(intent);
         });
+        Button nextBtn = findViewById(R.id.nextBtnDC);
+        nextBtn.setOnClickListener(v -> {
+            finish();
+            Intent intent = new Intent(DiscountActivity.this, PaymentMethodsActivity.class);
+            startActivity(intent);
+        });
     }
     @Override
     public void onItemClick(int value) {
         setValueDiscount(value);
-        finish();
-        Intent intent = new Intent(DiscountActivity.this, PaymentMethodsActivity.class);
-        startActivity(intent);
     }
     private void getUsernameFromSharedPreferences() {
         SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
