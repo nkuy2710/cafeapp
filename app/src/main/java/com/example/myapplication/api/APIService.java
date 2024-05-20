@@ -67,6 +67,21 @@ public interface APIService {
     Call<Void> setOffLineForUser(@Query("userId") int userId);
     @PATCH("/users/update-role-for-user-for-admin")
     Call<Void> updateRoleForUserForAdmin(@Query("userId") int userId, @Query("role") String role);
+    @GET("/users/get-password")
+    Call<User> getUserByUsername(@Query("username") String username);
+    @Multipart
+    @POST("/users/upload")
+    Call<User> uploadProfileImage(@Part MultipartBody.Part profileImage, @Part("username") RequestBody username);
+    @POST("/users/save-infor-user")
+    Call<Void> saveInforUser(@Query("username") String username, @Query("fullname") String fullname, @Query("email") String email, @Query("phoneNumber") String phoneNumber);
+    @Multipart
+    @POST("/users/upload")
+    Call<ResponseBody> uploadImage(
+            @Part MultipartBody.Part image,
+            @Part("username") RequestBody username
+    );
+    @GET("/users/get-image-user")
+    Call<String> getImageUser(@Query("username") String username);
     @GET("/products/products")
     Call<List<Product>> getListProducts();
     @GET("/products/list-best-cafe")
@@ -97,13 +112,8 @@ public interface APIService {
     Call<Void> setOrderIdProduct(@Query("username") String username);
     @GET("/address/get-address-for-user")
     Call<Address> getAddress(@Query("username") String username);
-    @GET("/users/get-password")
-    Call<User> getUserByUsername(@Query("username") String username);
     @POST("/login/add-staff")
     Call<User> addStaff(@Body User user);
-    @Multipart
-    @POST("/users/upload")
-    Call<User> uploadProfileImage(@Part MultipartBody.Part profileImage, @Part("username") RequestBody username);
     @GET("/address/get-address")
     Call<List<Address>> getListAddress(@Query("username") String username);
     @GET("/cart/get-product-in-complete")
@@ -140,14 +150,6 @@ public interface APIService {
     Call<Void> saveDataReply(@Body Reply reply);
     @GET("/reply/get-content-reply")
     Call<List<Reply>> getContentReply();
-    @POST("/users/save-infor-user")
-    Call<Void> saveInforUser(@Query("username") String username, @Query("fullname") String fullname, @Query("email") String email, @Query("phoneNumber") String phoneNumber);
-    @Multipart
-    @POST("/users/upload")
-    Call<ResponseBody> uploadImage(
-            @Part MultipartBody.Part image,
-            @Part("username") RequestBody username
-    );
     @POST("/address/save-data-address")
     Call<Void> saveDataAddress(@Body Address address);
     @POST("/emails/reset-password")

@@ -10,12 +10,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,9 +34,20 @@ import com.example.myapplication.activity.ReplyActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.activity.ReplyForAdminActivity;
 import com.example.myapplication.activity.StaffInforActivity;
+import com.example.myapplication.api.APIService;
+import com.example.myapplication.model.User;
+import com.squareup.picasso.Picasso;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AccountFragment extends Fragment {
     //
+    //
+    private ImageView imageProfile;
     private TextView usernameTxt;
     private Button editBtn;
     private LinearLayout linearLayout1;
@@ -45,6 +59,7 @@ public class AccountFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_account, container, false);
 
+        imageProfile = rootView.findViewById(R.id.imageProfile);
         linearLayout1 = rootView.findViewById(R.id.linearLayout1);
         usernameTxt = rootView.findViewById(R.id.usernameTxT);
         editBtn = rootView.findViewById(R.id.editBtn);
@@ -134,7 +149,7 @@ public class AccountFragment extends Fragment {
                 attendanceTxt.setVisibility(View.GONE);
             }
         }
-
+        getImageUser();
         return rootView;
     }
     private String getUsernameFromSharedPreferences() {
@@ -156,5 +171,27 @@ public class AccountFragment extends Fragment {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("userRole");
         editor.apply();
+    }
+
+    private void getImageUser() {
+        APIService.apiService.getImageUser(getUsernameFromSharedPreferences()).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
+                if (response.isSuccessful()) {
+                    String url = response.body();
+                    if (url != null && !url.isEmpty()) {
+                        Picasso.get().load(url).into(imageProfile);
+                    } else {
+                        Log.e("EditProfileActivity", "Get image user failed");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
+                Log.e("API Error", "Call API error: " + t.getMessage(), t);
+
+            }
+        });
     }
 }
