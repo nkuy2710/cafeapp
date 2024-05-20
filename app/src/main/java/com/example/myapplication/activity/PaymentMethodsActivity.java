@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -32,12 +33,12 @@ import retrofit2.Response;
 
 public class PaymentMethodsActivity extends AppCompatActivity implements PaymentMethodAdapter.OnItemClickListener{
     //
+    private String username;
+    private Dialog progressDialog;
     private RecyclerView recyclerView;
     private PaymentMethodAdapter adapter;
-    private List<PaymentMethod> paymentMethods;
-    private String username;
-
     private String selectedPaymentMethod;
+    private List<PaymentMethod> paymentMethods;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,24 +94,47 @@ public class PaymentMethodsActivity extends AppCompatActivity implements Payment
         SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
         username = sharedPreferences.getString("username", "");
     }
+    private void showProgressDialog() {
+        if (progressDialog == null) {
+            progressDialog = new Dialog(this);
+            progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            progressDialog.setContentView(R.layout.dialog_loading);
+            progressDialog.setCancelable(false);
+            if (progressDialog.getWindow() != null) {
+                progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            }
+        }
+        progressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
     private void setProductInCartIsConfirmed() {
         if (username.isEmpty()) {
             return;
         }
+        showProgressDialog();
         APIService.apiService.setProductInCartIsConfirmed(username)
                 .enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                         if (response.isSuccessful()) {
                             Log.e("PaymentMethodActivity", "Set is ordered:  " + "Successfully");
+                            hideProgressDialog();
                         } else {
                             Log.e("PaymentMethodActivity", "Set is ordered:  " + "Failed");
+                            hideProgressDialog();
                         }
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                         Log.e("API Error", "Call API error: " + t.getMessage(), t);
+                        hideProgressDialog();
                     }
                 });
     }
@@ -118,20 +142,24 @@ public class PaymentMethodsActivity extends AppCompatActivity implements Payment
         if (username.isEmpty()) {
             return;
         }
+        showProgressDialog();
         APIService.apiService.setPaymentMethodInCart(username, title)
                 .enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                         if (response.isSuccessful()) {
                             Log.e("PaymentMethodActivity", "Save payment method:  " + "Successfully");
+                            hideProgressDialog();
                         } else {
                             Log.e("PaymentMethodActivity", "Save payment method:  " + "Failed");
+                            hideProgressDialog();
                         }
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                         Log.e("API Error", "Call API error: " + t.getMessage(), t);
+                        hideProgressDialog();
                     }
                 });
     }
