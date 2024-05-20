@@ -126,6 +126,8 @@ public interface APIService {
     Call<Void> setProductInCartIsConfirmed(@Query("username") String username);
     @PUT("/cart/set-ordered")
     Call<Void> setProductInCartIsOdered(@Query("_id") int _id);
+    @PUT("/cart/set-delivered")
+    Call<Void> setProductInCartIsDelivered(@Query("_id") int _id);
     @GET("/cart/total-price")
     Call<TotalPriceResponse> getTotalPrice(@Query("username") String username);
     @GET("/cart/get-product-in-processing")

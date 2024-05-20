@@ -1,5 +1,6 @@
 package com.example.myapplication.activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -32,11 +33,14 @@ import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
     //
+    private User mUser;
     private EditText username;
     private EditText password;
-    private User mUser;
-    private TextInputLayout userContainer, passwordContainer;
     private List<User> mListUser;
+    private Dialog progressDialog;
+    private TextInputLayout userContainer, passwordContainer;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

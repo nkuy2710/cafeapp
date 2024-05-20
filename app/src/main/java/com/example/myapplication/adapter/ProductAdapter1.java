@@ -158,6 +158,7 @@ public class ProductAdapter1 extends RecyclerView.Adapter<ProductAdapter1.Produc
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
                     showCustomToast(context, "Xóa sản phẩm thành công");
+
                 } else {
                     showCustomToast(context, "Xóa sản phẩm thất bại");
                 }

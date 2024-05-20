@@ -20,7 +20,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.myapplication.R;
@@ -44,13 +43,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class EditProfileActivity extends AppCompatActivity {
-    //
     private User user;
     private String username;
     private ImageView backBtn, image;
-    private LinearLayout linearLayoutImage;
     private TextView idTxt, usernameTxT, roleTxt;
-    private EditText nameEdt, emailEdt, phoneNumEdt, imageEdt;
+    private EditText nameEdt, emailEdt, phoneNumEdt;
     private Button saveBtn, uploadBtn;
     private Uri selectedImageUri;
 
@@ -81,6 +78,7 @@ public class EditProfileActivity extends AppCompatActivity {
         getInforUser(username);
 
         backBtn.setOnClickListener(v -> finish());
+
         saveBtn.setOnClickListener(v -> saveInforUser(nameEdt.getText().toString(), emailEdt.getText().toString().trim(), phoneNumEdt.getText().toString().trim()));
 
         uploadBtn.setOnClickListener(v -> {
@@ -109,7 +107,7 @@ public class EditProfileActivity extends AppCompatActivity {
         activityResultLauncher.launch(intent);
     }
 
-    private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+    private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
@@ -117,13 +115,12 @@ public class EditProfileActivity extends AppCompatActivity {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         selectedImageUri = result.getData().getData();
                         image.setImageURI(selectedImageUri);
-                        uploadImageToServer(selectedImageUri);
                     }
                 }
             }
     );
 
-    private void uploadImageToServer(Uri imageUri) {
+    private void uploadImageToServer(Uri imageUri, String fullname, String email, String phoneNumber) {
         if (imageUri != null) {
             try {
                 InputStream inputStream = getContentResolver().openInputStream(imageUri);
@@ -137,6 +134,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
                             ToastUtils.showCustomToast(EditProfileActivity.this, "Upload successful");
+                            saveUserInfoToServer(fullname, email, phoneNumber);
                         } else {
                             ToastUtils.showCustomToast(EditProfileActivity.this, "Upload failed");
                         }
@@ -154,6 +152,8 @@ public class EditProfileActivity extends AppCompatActivity {
                 e.printStackTrace();
                 ToastUtils.showCustomToast(this, "Failed to read file");
             }
+        } else {
+            saveUserInfoToServer(fullname, email, phoneNumber);
         }
     }
 
@@ -201,7 +201,16 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
     }
+
     private void saveInforUser(String fullname, String email, String phoneNumber) {
+        if (selectedImageUri != null) {
+            uploadImageToServer(selectedImageUri, fullname, email, phoneNumber);
+        } else {
+            saveUserInfoToServer(fullname, email, phoneNumber);
+        }
+    }
+
+    private void saveUserInfoToServer(String fullname, String email, String phoneNumber) {
         APIService.apiService.saveInforUser(username, fullname, email, phoneNumber).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {

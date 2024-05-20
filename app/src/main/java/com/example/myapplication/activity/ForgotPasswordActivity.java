@@ -3,6 +3,7 @@ package com.example.myapplication.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,11 +26,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
-    //
     private Button resetPasswordBtn;
     private ImageView backBtn;
     private String username;
     private String email;
+    private Dialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -43,7 +45,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         resetPasswordBtn = findViewById(R.id.resetPasswordBtn);
         backBtn = findViewById(R.id.backBtn);
 
-
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("USERNAME")) {
             username = intent.getStringExtra("USERNAME");
@@ -54,10 +55,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             startActivity(intent1);
         });
         resetPasswordBtn.setOnClickListener(v -> {
-            if(!emailEdt.getText().toString().isEmpty()) {
+            if (!emailEdt.getText().toString().isEmpty()) {
                 if (!emailEdt.getText().toString().equals(email)) {
-                    Log.e("email" , "email" + emailEdt.getText().toString());
-                    Log.e("email user", "email user" + email);
+                 
                     ToastUtils.showCustomToast(ForgotPasswordActivity.this, "Email không khớp với email đã đăng kí");
                 } else {
                     callApiToGetResetPassWord(emailEdt.getText().toString());
@@ -69,11 +69,33 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
     }
 
+    private void showProgressDialog() {
+        if (progressDialog == null) {
+            progressDialog = new Dialog(this);
+            progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            progressDialog.setContentView(R.layout.dialog_loading);
+            progressDialog.setCancelable(false);
+            if (progressDialog.getWindow() != null) {
+                progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            }
+        }
+        progressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
     private void callApiToGetResetPassWord(String email) {
+        showProgressDialog();
+
         APIService.apiService.callApiToGetResetPassWord(email)
                 .enqueue(new Callback<Email>() {
                     @Override
                     public void onResponse(@NonNull Call<Email> call, @NonNull Response<Email> response) {
+
                         if (response.isSuccessful()) {
                             Email resetPassword = response.body();
                             Log.e("Reset password", "Reset password: " + resetPassword);
@@ -86,10 +108,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(@NonNull Call<Email> call, @NonNull Throwable t) {
+                        hideProgressDialog();
                         Log.e("API Error", "Call API error: " + t.getMessage(), t);
                     }
                 });
     }
+
     private void getEmailUser() {
         APIService.apiService.getEmailUser(username).enqueue(new Callback<String>() {
             @Override
@@ -98,7 +122,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     email = response.body();
                 } else {
                     Log.e("ForgotPasswordActivity", "Get email user failed ");
-
                 }
             }
 
@@ -108,15 +131,19 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             }
         });
     }
+
     private void updatePassword(String password) {
         password = hashPassword(password);
+
         APIService.apiService.updatePassword(username, password)
                 .enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+
                         if (response.isSuccessful()) {
                             Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
                             startActivity(intent);
+                            hideProgressDialog();
                         } else {
                             ToastUtils.showCustomToast(ForgotPasswordActivity.this, "Reset Failed");
                         }
@@ -124,10 +151,13 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                        hideProgressDialog();
+
                         Log.e("API Error", "Call API error: " + t.getMessage(), t);
                     }
                 });
     }
+
     private static String hashPassword(String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -145,5 +175,4 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             return null;
         }
     }
-
 }

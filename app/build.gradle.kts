@@ -32,8 +32,10 @@ android {
     }
 
 }
-
 dependencies {
+    implementation("com.airbnb.android:lottie:5.2.0")
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("io.jsonwebtoken:jjwt-api:0.11.2")
     implementation("io.jsonwebtoken:jjwt-impl:0.11.2")

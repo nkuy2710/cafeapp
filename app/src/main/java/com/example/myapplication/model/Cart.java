@@ -21,8 +21,9 @@ public class Cart implements Serializable {
     private String contentEvaluate;
     private Boolean isConfirmed;
     private Boolean isOrdered;
+    private Boolean isDelivered;
     private Boolean isCompleted;
-    public Cart(int _id, String orderId, String user, String image, String title, Double price, int quantity, Double total, ArrayList<String> options, String paymentMethod, float starEvaluate, String contentEvaluate, Boolean isConfirmed, Boolean isOrdered, Boolean isCompleted, Date updatedAt) {
+    public Cart(int _id, String orderId, String user, String image, String title, Double price, int quantity, Double total, ArrayList<String> options, String paymentMethod, float starEvaluate, String contentEvaluate, Boolean isConfirmed, Boolean isOrdered,  Boolean isDelivered, Boolean isCompleted, Date updatedAt) {
         this._id = _id;
         this.orderId = orderId;
         this.user = user;
@@ -37,6 +38,7 @@ public class Cart implements Serializable {
         this.contentEvaluate = contentEvaluate;
         this.isConfirmed = isConfirmed;
         this.isOrdered = isOrdered;
+        this.isDelivered = isDelivered;
         this.isCompleted = isCompleted;
     }
     public Cart(String user, Product product, int quantity) {
@@ -48,6 +50,7 @@ public class Cart implements Serializable {
         this.total = product.getPrice() * quantity;
         this.isConfirmed = false;
         this.isOrdered = false;
+        this.isDelivered = false;
         this.isCompleted = false;
     }
     public int get_id() {
@@ -143,6 +146,10 @@ public class Cart implements Serializable {
     public void setOrdered(Boolean ordered) {
         isOrdered = ordered;
     }
+    public Boolean getDelivered() {
+        return isDelivered;
+    }
+
     public Boolean getCompleted() {
         return isCompleted;
     }
