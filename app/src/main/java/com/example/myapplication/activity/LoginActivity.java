@@ -37,7 +37,6 @@ public class LoginActivity extends AppCompatActivity {
     private User mUser;
     private TextInputLayout userContainer, passwordContainer;
     private List<User> mListUser;
-    private ImageView facebookBtn, googleBtn, twitterBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,9 +50,6 @@ public class LoginActivity extends AppCompatActivity {
         username = findViewById(R.id.userEdt);
         password = findViewById(R.id.passEdt);
         Button loginBtn = findViewById(R.id.loginBtn);
-        facebookBtn = findViewById(R.id.facebookBtn);
-        googleBtn = findViewById(R.id.googleBtn);
-        twitterBtn = findViewById(R.id.twitterBtn);
         userContainer = findViewById(R.id.userContainer);
         passwordContainer = findViewById(R.id.passwordContainer);
         TextView forgetPassTxt = findViewById(R.id.forgetPassTxt);
@@ -88,7 +84,7 @@ public class LoginActivity extends AppCompatActivity {
         forgetPassTxt.setOnClickListener(v -> {
             String strUsername;
             if (username.getText().toString().isEmpty()) {
-                ToastUtils.showCustomToast(LoginActivity.this, "Vui lòng nhập email");
+                ToastUtils.showCustomToast(LoginActivity.this, "Vui lòng nhập tài khoản");
                 return;
             } else {
                 strUsername = username.getText().toString().toLowerCase();
