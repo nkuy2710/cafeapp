@@ -82,6 +82,8 @@ public interface APIService {
     );
     @GET("/users/get-image-user")
     Call<String> getImageUser(@Query("username") String username);
+    @GET("/users/get-email-user")
+    Call<String> getEmailUser(@Query("username") String username);
     @GET("/products/products")
     Call<List<Product>> getListProducts();
     @GET("/products/list-best-cafe")
