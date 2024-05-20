@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:paddingBottom="32dp">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <ImageView
                 android:id="@+id/backBtn"
                 android:layout_width="20dp"
@@ -110,8 +114,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Giá"
-                            android:textSize="16sp"
                             android:textColor="@color/black"
+                            android:textSize="16sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -120,9 +124,9 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="0đ"
-                            android:textSize="16sp"
+                            android:textAlignment="textEnd"
                             android:textColor="@color/black"
-                            android:textAlignment="textEnd" />
+                            android:textSize="16sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -136,8 +140,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Khuyến mãi"
-                            android:textSize="16sp"
                             android:textColor="@color/black"
+                            android:textSize="16sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -146,9 +150,9 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="0đ"
-                            android:textSize="16sp"
+                            android:textAlignment="textEnd"
                             android:textColor="@color/black"
-                            android:textAlignment="textEnd" />
+                            android:textSize="16sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -162,8 +166,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Tổng tiền"
-                            android:textSize="16sp"
                             android:textColor="@color/black"
+                            android:textSize="16sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -172,9 +176,9 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="0đ"
-                            android:textSize="16sp"
+                            android:textAlignment="textEnd"
                             android:textColor="@color/black"
-                            android:textAlignment="textEnd" />
+                            android:textSize="16sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -198,9 +202,9 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Thanh toán khi nhận hàng"
+                            android:textAlignment="textEnd"
                             android:textColor="@color/black"
-                            android:textSize="16sp"
-                            android:textAlignment="textEnd" />
+                            android:textSize="16sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -225,8 +229,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Địa chỉ giao hàng"
-                        android:textSize="16sp"
                         android:textColor="@color/black"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <LinearLayout
@@ -240,8 +244,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Họ và tên"
-                            android:textSize="16sp"
                             android:textColor="@color/black"
+                            android:textSize="16sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -250,9 +254,9 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="TextView"
-                            android:textSize="16sp"
+                            android:textAlignment="textEnd"
                             android:textColor="@color/black"
-                            android:textAlignment="textEnd" />
+                            android:textSize="16sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -266,8 +270,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Điện thoại"
-                            android:textSize="16sp"
                             android:textColor="@color/black"
+                            android:textSize="16sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -276,9 +280,9 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="TextView"
-                            android:textSize="16sp"
+                            android:textAlignment="textEnd"
                             android:textColor="@color/black"
-                            android:textAlignment="textEnd" />
+                            android:textSize="16sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -292,8 +296,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Địa chỉ"
-                            android:textSize="16sp"
                             android:textColor="@color/black"
+                            android:textSize="16sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -302,9 +306,9 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="TextView"
-                            android:textSize="16sp"
+                            android:textAlignment="textEnd"
                             android:textColor="@color/black"
-                            android:textAlignment="textEnd" />
+                            android:textSize="16sp" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>

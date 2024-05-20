@@ -33,6 +33,7 @@ import retrofit2.Response;
 
 public class TrackingActivity extends AppCompatActivity {
     //
+    //
     private String username, role;
     private boolean isConfirmed, isOrdered, isDelivered;
     private ImageView backBtn, imageStage2, imageStage3;
@@ -52,8 +53,6 @@ public class TrackingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tracking);
 
         backBtn = findViewById(R.id.backBtn);
-        orderDateTxt = findViewById(R.id.orderDateTxt);
-        deliverDateTxt = findViewById(R.id.deliverDateTxt);
         progressBar = findViewById(R.id.progressBar);
         progressBar1 = findViewById(R.id.progressBar1);
         imageStage2 = findViewById(R.id.imageStage2);
@@ -241,6 +240,7 @@ public class TrackingActivity extends AppCompatActivity {
                     public void onResponse(@NonNull Call<List<Cart>> call, @NonNull Response<List<Cart>> response) {
                         productListInCart = response.body();
                         assert productListInCart != null;
+                        isDelivered = productListInCart.get(0).getDelivered();
                         isOrdered = productListInCart.get(0).getOrdered();
                         int progressColor = ContextCompat.getColor(TrackingActivity.this, R.color.md_green_500);
                         if (isOrdered) {
